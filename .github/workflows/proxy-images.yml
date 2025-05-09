@@ -1,5 +1,9 @@
 name: Proxy Docker Images
 
+permissions:
+  packages: write
+  contents: read
+
 on:
   workflow_dispatch:
   schedule:
