@@ -1,0 +1,38 @@
+name: Proxy Docker Images
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * *'
+
+jobs:
+  proxy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Load image config
+        id: load_config
+        run: |
+          echo "::set-output name=images::$(yq '.images | @json' images.yml)"
+        shell: bash
+
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Pull, tag, and push images
+        run: |
+          images='${{ steps.load_config.outputs.images }}'
+          echo "$images" | jq -c '.[]' | while read image; do
+            src=$(echo "$image" | jq -r '.source')
+            tgt=$(echo "$image" | jq -r '.target')
+            echo "Proxying $src -> $tgt"
+            docker pull "$src"
+            docker tag "$src" "$tgt"
+            docker push "$tgt"
+          done
+        shell: bash
