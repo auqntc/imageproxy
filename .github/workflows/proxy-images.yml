@@ -34,26 +34,9 @@ jobs:
           echo "$images" | jq -c '.[]' | while read image; do
             src=$(echo "$image" | jq -r '.source')
             tgt=$(echo "$image" | jq -r '.target')
-            tag="${src##*:}"
-
-            if [ "$tag" != "latest" ]; then
-              if docker manifest inspect "$tgt" > /dev/null 2>&1; then
-                echo "$tgt exists – skipping."
-              else
-                docker pull "$src"
-                docker tag "$src" "$tgt"
-                docker push "$tgt"
-              fi
-            else
-              docker pull "$src"
-              src_digest=$(docker inspect --format='{{index .RepoDigests 0}}' "$src" | cut -d@ -f2)
-              tgt_digest=$(docker manifest inspect "$tgt" 2>/dev/null | jq -r '.manifests[0].digest // empty')
-              if [ "$src_digest" = "$tgt_digest" ]; then
-                echo "$tgt is up to date – skipping."
-              else
-                docker tag "$src" "$tgt"
-                docker push "$tgt"
-              fi
-            fi
+            echo "Proxying $src -> $tgt"
+            docker pull "$src"
+            docker tag "$src" "$tgt"
+            docker push "$tgt"
           done
         shell: bash
