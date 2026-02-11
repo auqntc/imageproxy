@@ -2,11 +2,11 @@
 images:
   - source: ankane/pgvector:latest
     target: ghcr.io/auqntc/ankane/pgvector:latest
-  - source: pgvector/pgvector:latest
-    target: ghcr.io/auqntc/pgvector/pgvector:latest    
   - source: bitnami/mongodb:latest
     target: ghcr.io/auqntc/bitnami/mongodb:latest
   - source: getmeili/meilisearch:latest
     target: ghcr.io/auqntc/getmeili/meilisearch:latest
   - source: 1password/connect-api:1.7.3
     target: ghcr.io/auqntc/1password/connect-api:1.7.3
+  - source: pgvector/pgvector:latest
+    target: ghcr.io/auqntc/pgvector/pgvector:latest
