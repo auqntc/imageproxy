@@ -10,3 +10,5 @@ images:
     target: ghcr.io/auqntc/getmeili/meilisearch:latest
   - source: 1password/connect-api:1.7.3
     target: ghcr.io/auqntc/1password/connect-api:1.7.3
+  - source: busybox:latest
+    target: ghcr.io/auqntc/busybox:latest
